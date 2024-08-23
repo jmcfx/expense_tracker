@@ -11,30 +11,76 @@ class ExpenseScreen extends StatefulWidget {
 }
 
 class _ExpenseScreenState extends State<ExpenseScreen> {
+  //registered Expense list
   final List<ExpenseModel> _registeredExpensesList = [
     ExpenseModel(
       title: "Home Made",
       amount: 19.99,
       date: DateTime.now(),
-      category: Category.work,
+      category: CategoryEvent.work,
     ),
     ExpenseModel(
       title: "Cinema",
       amount: 12.99,
       date: DateTime.now(),
-      category: Category.leisure,
+      category: CategoryEvent.leisure,
     )
   ];
 
+  //add new Expense......
+  void _addExpense(ExpenseModel expense) {
+    setState(() {
+      _registeredExpensesList.add(expense);
+    });
+  }
+
+//remove Expense......
+  void _removeExpense(ExpenseModel expense) {
+
+    final expenseIndex = _registeredExpensesList.indexOf(expense);
+    setState(() {
+      _registeredExpensesList.remove(expense);
+    });
+
+    ScaffoldMessenger.of(context).clearSnackBars();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: const Duration(seconds: 5),
+        content: const Text("Expense deleted"),
+        action: SnackBarAction(
+          label: "Undo",
+          onPressed: () {
+            setState(() {
+              _registeredExpensesList.insert(expenseIndex, expense);
+            });
+          },
+        ),
+      ),
+    );
+  }
+
+  ///openAdd ExpenseOverlay.....
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
+      isScrollControlled: true,
       context: context,
-      builder: (BuildContext context) => const NewExpenseModal(),
+      builder: (BuildContext context) => NewExpenseModal(
+        onAddExpense: _addExpense,
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget mainContent = const Center(
+      child: Text("No expenses found. Start adding some !"),
+    );
+    if (_registeredExpensesList.isNotEmpty) {
+      mainContent = ExpenseList(
+          expenses: _registeredExpensesList, onRemoveExpense: _removeExpense);
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Expense Tracker"),
@@ -52,9 +98,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
           const SizedBox(
             height: 10,
           ),
-          Expanded(
-            child: ExpenseList(expenses: _registeredExpensesList),
-          )
+          Expanded(child: mainContent)
         ],
       ),
     );
