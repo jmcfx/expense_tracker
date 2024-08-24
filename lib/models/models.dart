@@ -36,3 +36,28 @@ class ExpenseModel {
 //date formatter .....
   String get formattedDate => formatter.format(date);
 }
+
+// Expenses Bucket.......takes an instance if Expense model as on of it's constructor properties...
+class ExpensesBucket {
+  final CategoryEvent categoryEvent;
+  final List<ExpenseModel> expenses;
+
+  ExpensesBucket({required this.categoryEvent, required this.expenses});
+
+//expensesBucket Category....
+  ExpensesBucket.forCategory(List<ExpenseModel> allExpenses, this.categoryEvent)
+      : expenses = allExpenses
+            .where((allExpenses) => allExpenses.category == categoryEvent)
+            .toList();
+
+// totalExpenses .....
+  double get totalExpenses {
+    double sum = 0;
+
+    //loop through all the expenses into expense
+    for (final expense in expenses) {
+      sum = sum + expense.amount;
+    }
+    return sum;
+  }
+}

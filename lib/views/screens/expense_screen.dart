@@ -1,4 +1,5 @@
-import 'package:expense_tracker/models/expense_model.dart';
+import 'package:expense_tracker/models/models.dart';
+import 'package:expense_tracker/views/widgets/chart/chart.dart';
 import 'package:expense_tracker/views/widgets/expenses_list/expense_list.dart';
 import 'package:expense_tracker/views/widgets/expenses_list/new_expense_modal.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,6 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
 
 //remove Expense......
   void _removeExpense(ExpenseModel expense) {
-
     final expenseIndex = _registeredExpensesList.indexOf(expense);
     setState(() {
       _registeredExpensesList.remove(expense);
@@ -94,11 +94,13 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
       body: Column(
         children: [
           //ToolBar with the Add button => Row()
-          const Text("The Chart"),
-          const SizedBox(
-            height: 10,
+          Chart(
+            expenses: _registeredExpensesList,
           ),
-          Expanded(child: mainContent)
+          const SizedBox(height: 10),
+          Expanded(
+            child: mainContent,
+          )
         ],
       ),
     );
