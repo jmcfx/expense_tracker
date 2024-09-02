@@ -54,6 +54,7 @@ class Chart extends StatelessWidget {
       ),
       child: Column(
         children: [
+          //first row....
           Expanded(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -68,6 +69,7 @@ class Chart extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
+         // second row....
           Row(
             children: buckets
                 .map(

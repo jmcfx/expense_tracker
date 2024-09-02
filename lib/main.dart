@@ -1,13 +1,19 @@
+import 'package:expense_tracker/utils/color.dart';
 import 'package:expense_tracker/views/screens/expense_screen.dart';
 import 'package:flutter/material.dart';
 
+
 void main() {
+  //portrait mode...
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
+  //   (fn) {
+  //     runApp(const MyApp());
+  //   },
+  // );
+
   runApp(const MyApp());
 }
-
-final ColorScheme colorScheme =  ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 96, 59, 181));
-final ColorScheme darkColorScheme = ColorScheme.fromSeed(  brightness: Brightness.dark, seedColor: const Color.fromARGB(255, 5, 99, 125));
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -22,7 +28,7 @@ class MyApp extends StatelessWidget {
         colorScheme: darkColorScheme,
         cardTheme: const CardTheme().copyWith(
           color: darkColorScheme.secondaryContainer,
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),   
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
@@ -30,8 +36,7 @@ class MyApp extends StatelessWidget {
             foregroundColor: darkColorScheme.onPrimaryContainer,
           ),
         ),
-      ),
-
+      ),   
       //Light Theme......
       theme: ThemeData(
         useMaterial3: true,
@@ -39,7 +44,6 @@ class MyApp extends StatelessWidget {
         appBarTheme: const AppBarTheme().copyWith(
           backgroundColor: colorScheme.onPrimaryContainer,
           foregroundColor: colorScheme.primaryContainer,
-          
         ),
         cardTheme: const CardTheme().copyWith(
           color: colorScheme.secondaryContainer,
@@ -47,9 +51,9 @@ class MyApp extends StatelessWidget {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-              backgroundColor: colorScheme.primaryContainer,
-              foregroundColor: colorScheme.onPrimaryContainer,
-              ),
+            backgroundColor: colorScheme.primaryContainer,
+            foregroundColor: colorScheme.onPrimaryContainer,
+          ),
         ),
         textTheme: ThemeData().textTheme.copyWith(
               titleLarge: TextStyle(
@@ -59,6 +63,7 @@ class MyApp extends StatelessWidget {
               ),
             ),
       ),
+      
       home: const ExpenseScreen(),
     );
   }

@@ -63,6 +63,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
   ///openAdd ExpenseOverlay.....
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
+      useSafeArea: true,
       isScrollControlled: true,
       context: context,
       builder: (BuildContext context) => NewExpenseModal(
@@ -73,6 +74,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     Widget mainContent = const Center(
       child: Text("No expenses found. Start adding some !"),
     );
@@ -91,18 +93,34 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          //ToolBar with the Add button => Row()
-          Chart(
-            expenses: _registeredExpensesList,
-          ),
-          const SizedBox(height: 10),
-          Expanded(
-            child: mainContent,
-          )
-        ],
-      ),
+      body: width <= 600
+          ?    Column(
+              children: [
+                //ToolBar with the Add button => Row()
+                Chart(
+                  expenses: _registeredExpensesList,
+                ),
+               const  SizedBox(height: 10),
+                Expanded(
+                  child: mainContent,
+                ),
+              ],
+            )
+          : Row(
+              children: [
+                //ToolBar with the Add button => Row()
+                Expanded(
+                  child: Chart(
+                    expenses: _registeredExpensesList,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Expanded(
+                  child: mainContent,
+                )
+              ],
+            ),
     );
   }
 }
+ 
