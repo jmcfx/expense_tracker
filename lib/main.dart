@@ -1,5 +1,5 @@
 import 'package:expense_tracker/utils/color.dart';
-import 'package:expense_tracker/views/screens/expense_screen.dart';
+import 'package:expense_tracker/widgets/grocery_list.dart';
 import 'package:flutter/material.dart';
 
 
@@ -64,7 +64,8 @@ class MyApp extends StatelessWidget {
             ),
       ),
       
-      home: const ExpenseScreen(),
+      // home: const ExpenseScreen(),
+      home: const GroceryList(),
     );
   }
 }
