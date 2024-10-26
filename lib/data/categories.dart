@@ -1,8 +1,7 @@
 import 'package:expense_tracker/models/category_model.dart';
 import 'package:flutter/material.dart';
 
-
- const Map<Categories, CategoryModel> categoriesList = {
+const Map<Categories, CategoryModel> categoriesMap = {
   Categories.vegetables: CategoryModel(
     'Vegetables',
     Color.fromARGB(255, 0, 255, 128),
@@ -23,7 +22,7 @@ import 'package:flutter/material.dart';
     'Carbs',
     Color.fromARGB(255, 0, 60, 255),
   ),
- Categories.sweets: CategoryModel(
+  Categories.sweets: CategoryModel(
     'Sweets',
     Color.fromARGB(255, 255, 149, 0),
   ),
@@ -35,7 +34,7 @@ import 'package:flutter/material.dart';
     'Convenience',
     Color.fromARGB(255, 191, 0, 255),
   ),
-Categories.hygiene: CategoryModel(
+  Categories.hygiene: CategoryModel(
     'Hygiene',
     Color.fromARGB(255, 149, 0, 255),
   ),

@@ -3,23 +3,20 @@ import 'package:expense_tracker/models/category_model.dart';
 
 import 'package:expense_tracker/models/grocery_item_model.dart';
 
- final  groceryItems = [
+final groceryItems = [
   GroceryItemModel(
       id: 'a',
       name: 'Milk',
       quantity: 1,
-      category: categoriesList[Categories.dairy]!
-      ),
+      category: categoriesMap[Categories.dairy]!),
   GroceryItemModel(
       id: 'b',
       name: 'Bananas',
       quantity: 5,
-      category: categoriesList[Categories.fruit]!
-      ),
+      category: categoriesMap[Categories.fruit]!),
   GroceryItemModel(
       id: 'c',
       name: 'Beef Steak',
       quantity: 1,
-      category: categoriesList[Categories.meat]!
-      ),
+      category: categoriesMap[Categories.meat]!),
 ];
