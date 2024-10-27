@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:expense_tracker/models/grocery_item_model.dart';
 import 'package:expense_tracker/widgets/new_items.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class GroceryList extends StatefulWidget {
   const GroceryList({super.key});
@@ -11,18 +14,30 @@ class GroceryList extends StatefulWidget {
 
 class _GroceryListState extends State<GroceryList> {
   final List<GroceryItemModel> _groceryItems = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadItems();
+  }
+
+  void _loadItems() async {
+    const url = "expensetracker-2863d-default-rtdb.firebaseio.com";
+    final uri = Uri.https(url, "shopping-list.json");
+    final response = await http.get(uri);
+    final Map mapData = jsonDecode(response.body);
+    for(final item in mapData.entries){
+
+    }
+  }
+
   //addItem... push to newItems Screen....
   void _addItem() async {
-    final newItems = await Navigator.of(context).push(MaterialPageRoute(
+    await Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => const NewItems(),
     ));
 
-    if (newItems == null) {
-      return;
-    }
-    setState(() {
-      _groceryItems.add(newItems);
-    });
+    _loadItems();
   }
 
   void _removeItem(GroceryItemModel item) {
@@ -62,15 +77,18 @@ class _GroceryListState extends State<GroceryList> {
       );
     }
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Your Groceries"),
-          actions: [
-            IconButton(
-              onPressed: _addItem,
-              icon: const Icon(Icons.add),
-            )
-          ],
-        ),
-        body: content);
+      appBar: AppBar(
+        title: const Text("Your Groceries"),
+        actions: [
+          IconButton(
+            onPressed: _addItem,
+            icon: const Icon(Icons.add),
+          )
+        ],
+      ),
+      body: content,
+      
+      
+    );
   }
 }

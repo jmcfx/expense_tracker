@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'package:expense_tracker/data/categories.dart';
 import 'package:expense_tracker/models/category_model.dart';
-import 'package:expense_tracker/models/grocery_item_model.dart';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class NewItems extends StatefulWidget {
   const NewItems({super.key});
@@ -15,10 +17,29 @@ class _NewItemsState extends State<NewItems> {
   var _enteredName = "";
   var _enteredQuantity = 1;
   var _selectedCategory = categoriesMap[Categories.vegetables]!;
-  void _saveItem() {
+  void _saveItem() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      Navigator.of(context).pop(GroceryItemModel(id: DateTime.now().toString(), name: _enteredName, quantity: _enteredQuantity ,category: _selectedCategory),);
+
+      const url = "expensetracker-2863d-default-rtdb.firebaseio.com";
+      final uri = Uri.https(
+        url,
+        "shopping-list.json",
+      );
+
+      final response = await http.post(uri,
+          headers: {"Content-Type": "application/json"},
+          body: json.encode(
+            {
+              "name": _enteredName,
+              "quantity": _enteredQuantity,
+              "category": _selectedCategory.title,
+            },
+          ));
+
+      if (response.statusCode == 200) {
+         Navigator.of(context).pop();
+      }
     }
   }
 
