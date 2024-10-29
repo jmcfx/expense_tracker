@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:expense_tracker/data/categories.dart';
 import 'package:expense_tracker/models/category_model.dart';
+import 'package:expense_tracker/models/grocery_item_model.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -17,8 +18,12 @@ class _NewItemsState extends State<NewItems> {
   var _enteredName = "";
   var _enteredQuantity = 1;
   var _selectedCategory = categoriesMap[Categories.vegetables]!;
+  var _isSending = false;
   void _saveItem() async {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isSending = true;
+      });
       _formKey.currentState!.save();
 
       const url = "expensetracker-2863d-default-rtdb.firebaseio.com";
@@ -37,9 +42,16 @@ class _NewItemsState extends State<NewItems> {
             },
           ));
 
-      if (response.statusCode == 200) {
-         Navigator.of(context).pop();
+      final Map<String, dynamic> resData = json.decode(response.body);
+      if (!context.mounted) {
+        return;
       }
+
+      Navigator.of(context).pop(GroceryItemModel(
+          id: resData['name'],
+          name: _enteredName,
+          quantity: _enteredQuantity,
+          category: _selectedCategory));
     }
   }
 
@@ -142,14 +154,14 @@ class _NewItemsState extends State<NewItems> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
-                      onPressed: () {
+                      onPressed:_isSending ? null : () {
                         _formKey.currentState!.reset();
                       },
                       child: const Text("Reset"),
                     ),
                     ElevatedButton(
-                      onPressed: _saveItem,
-                      child: const Text("Add Item"),
+                      onPressed: _isSending ? null  : _saveItem,
+                      child:  _isSending ? const SizedBox(height: 16, width: 16,child: CircularProgressIndicator(),) :   const Text("Add Item"),
                     )
                   ],
                 )

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:expense_tracker/data/categories.dart';
 import 'package:expense_tracker/models/grocery_item_model.dart';
 import 'package:expense_tracker/widgets/new_items.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +14,9 @@ class GroceryList extends StatefulWidget {
 }
 
 class _GroceryListState extends State<GroceryList> {
-  final List<GroceryItemModel> _groceryItems = [];
-
+  List<GroceryItemModel> _groceryItems = [];
+  var _isLoading = true;
+  String? _error;
   @override
   void initState() {
     super.initState();
@@ -25,25 +27,63 @@ class _GroceryListState extends State<GroceryList> {
     const url = "expensetracker-2863d-default-rtdb.firebaseio.com";
     final uri = Uri.https(url, "shopping-list.json");
     final response = await http.get(uri);
-    final Map mapData = jsonDecode(response.body);
-    for(final item in mapData.entries){
-
+    if (response.statusCode >= 400) {
+      setState(() {
+        _error = "Failed to fetch data. Please try again later ";
+      });
     }
+
+    final Map listData = jsonDecode(response.body);
+    final List<GroceryItemModel> loadedItems = [];
+
+    for (final item in listData.entries) {
+      final category = categoriesMap.entries
+          .firstWhere((e) => e.value.title == item.value['category'])
+          .value;
+      loadedItems.add(
+        GroceryItemModel(
+          id: item.key,
+          name: item.value["name"],
+          quantity: item.value["quantity"],
+          category: category,
+        ),
+      );
+    }
+    setState(() {
+      _groceryItems = loadedItems;
+      _isLoading = false;
+    });
   }
 
   //addItem... push to newItems Screen....
   void _addItem() async {
-    await Navigator.of(context).push(MaterialPageRoute(
+    final newItem = await Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => const NewItems(),
     ));
 
-    _loadItems();
+    if (newItem == null) {
+      return;
+    }
+
+    setState(() {
+      _groceryItems.add(newItem);
+    });
   }
 
-  void _removeItem(GroceryItemModel item) {
+  void _removeItem(GroceryItemModel item) async {
+    final index = _groceryItems.indexOf(item);
     setState(() {
       _groceryItems.remove(item);
     });
+    const url = "expensetracker-2863d-default-rtdb.firebaseio.com";
+    final uri = Uri.https(url, "shopping-list/${item.id}.json");
+    final response = await http.delete(uri);
+    if (response.statusCode >= 400) {
+      setState(() {
+        _groceryItems.insert(index, item);
+      });
+    }
+
   }
 
   @override
@@ -57,6 +97,12 @@ class _GroceryListState extends State<GroceryList> {
             ),
       ),
     );
+
+    if (_isLoading) {
+      content = const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
     // if groceryItems not Empty...
     if (_groceryItems.isNotEmpty) {
       content = ListView.builder(
@@ -76,6 +122,9 @@ class _GroceryListState extends State<GroceryList> {
         ),
       );
     }
+    if (_error != null) {
+      content = Center(child: Text(_error!));
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text("Your Groceries"),
@@ -87,8 +136,6 @@ class _GroceryListState extends State<GroceryList> {
         ],
       ),
       body: content,
-      
-      
     );
   }
 }
