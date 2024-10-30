@@ -26,11 +26,22 @@ class _GroceryListState extends State<GroceryList> {
   void _loadItems() async {
     const url = "expensetracker-2863d-default-rtdb.firebaseio.com";
     final uri = Uri.https(url, "shopping-list.json");
+    try{
+         final response = await http.get(uri);
+    }catch (e){}
+    
     final response = await http.get(uri);
     if (response.statusCode >= 400) {
       setState(() {
         _error = "Failed to fetch data. Please try again later ";
       });
+    }
+
+    if (response.body == "null") {
+      setState(() {
+        _isLoading = false;
+      });
+      return;
     }
 
     final Map listData = jsonDecode(response.body);
@@ -83,7 +94,6 @@ class _GroceryListState extends State<GroceryList> {
         _groceryItems.insert(index, item);
       });
     }
-
   }
 
   @override

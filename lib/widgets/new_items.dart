@@ -60,6 +60,7 @@ class _NewItemsState extends State<NewItems> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add a new item'),
+        
       ),
       body: Padding(
         padding: const EdgeInsets.all(12),
